@@ -6,7 +6,7 @@ export default boot(async ({router, store}) => {
   const authStore = useAuthStore(store);
 
   router.beforeEach((to, from) => {
-    if (to.meta.requiresAuth && !authStore.isLoggedIn) {
+    if (to.meta.requiresAuth && !authStore.isAuthenticated) {
       return {
         path: '/login',
         query: { redirect: to.fullPath },
@@ -14,8 +14,4 @@ export default boot(async ({router, store}) => {
     }
   });
 
-/*   router.beforeEach((to, from, next) =>{
-    if( to.name !== 'Login' && !authStore.isLoggedIn) next({name: 'Login'});
-    else next();
-  }); */
 });

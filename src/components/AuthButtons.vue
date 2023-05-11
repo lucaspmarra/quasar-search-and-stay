@@ -10,15 +10,15 @@ export default {
     const login = () => {
       router.push('/login');
     };
+
     const logout = () => {
       authStore.clearToken();
     };
-    console.log('loading?', authStore.isLoading);
+    
     return {
-      isLoggedIn: authStore.isLoggedIn,
-      isLoading: authStore.isLoading,
       logout,
-      login
+      login,
+      authStore
     };
   }
 };
@@ -27,7 +27,7 @@ export default {
 <template>
   <div>
     <q-btn
-      v-if="!isLoggedIn"
+      v-if="authStore.isAuthenticated"
       class="q-ma-md"
       @click="logout"
       label="Logout" />
@@ -47,23 +47,6 @@ export default {
       class="q-ma-md"
       label="Dashboard"
       to="/dashboard" />
-
-
-    <q-dialog
-      v-model="isLoading"
-      no-backdrop
-      dismissible
-      persistent
-      title="Logout">
-      <q-card>
-        <q-card-section>
-          <q-spinner color="primary" />
-          <div class="q-mt-md">
-            Logging out...
-          </div>
-        </q-card-section>
-      </q-card>
-    </q-dialog>
   </div>
 </template>
   

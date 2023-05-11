@@ -6,9 +6,9 @@ export default defineComponent({
   name: 'LogoutDialog',
   setup() {
     const authStore = useAuthStore();
-  
+
     return {
-      isLoading: authStore.isLoading
+      authStore
     };
   }
 });
@@ -16,13 +16,13 @@ export default defineComponent({
   
 <template>
   <q-dialog
-    v-model="isLoading"
+    v-model="authStore.loading"
     no-backdrop
     dismissible
     persistent
     title="Logout">
     <q-card>
-      <q-card-section>
+      <q-card-section class="">
         <q-spinner color="primary" />
         <div class="q-mt-md">
           Logging out...
