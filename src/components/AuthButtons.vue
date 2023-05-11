@@ -1,19 +1,19 @@
 <script>
 import { useAuthStore } from '../stores/auth-store';
 import { useRouter } from 'vue-router';
-  
+
 export default {
-  setup() {
+  setup () {
     const authStore = useAuthStore();
     const router = useRouter();
-  
+
     const login = () => {
       router.push('/login');
     };
     const logout = () => {
       authStore.clearToken();
     };
-  
+    console.log('loading?', authStore.isLoading);
     return {
       isLoggedIn: authStore.isLoggedIn,
       isLoading: authStore.isLoading,
@@ -27,20 +27,34 @@ export default {
 <template>
   <div>
     <q-btn
-      v-if="isLoggedIn"
-      @click="login"
-      label="Login" />
-    
-    <q-btn
-      v-else
+      v-if="!isLoggedIn"
+      class="q-ma-md"
       @click="logout"
       label="Logout" />
-  
+
+    <q-btn
+      v-else
+      class="q-ma-md"
+      @click="login"
+      label="Login" />
+
+    <q-btn
+      class="q-ma-md"
+      label="Home"
+      to="/" />
+
+    <q-btn
+      class="q-ma-md"
+      label="Dashboard"
+      to="/dashboard" />
+
+
     <q-dialog
       v-model="isLoading"
       no-backdrop
       dismissible
-      persistent>
+      persistent
+      title="Logout">
       <q-card>
         <q-card-section>
           <q-spinner color="primary" />

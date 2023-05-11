@@ -15,7 +15,6 @@ function login() {
 </script>
 
 <template>
-  <h4>Login page</h4>
   <q-page class="flex flex-center">
     <q-card class="q-pa-md">
       <q-card-section>

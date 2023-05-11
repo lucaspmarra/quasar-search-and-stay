@@ -1,9 +1,6 @@
 import { route } from 'quasar/wrappers';
 import { createRouter, createMemoryHistory, createWebHistory, createWebHashHistory } from 'vue-router';
 import routes from './routes';
-import { useAuthStore } from '../stores/auth-store';
-
-
 
 export default route(function (/* { store, ssrContext } */) {
 
@@ -17,17 +14,6 @@ export default route(function (/* { store, ssrContext } */) {
     history: createHistory(process.env.VUE_ROUTER_BASE),
   });
 
-  const authStore = useAuthStore();
-
-  // eslint-disable-next-line no-unused-vars
-  Router.beforeEach((to, from) => {
-    if (to.meta.requiresAuth && !authStore.isLoggedIn) {
-      return {
-        path: '/login',
-        query: { redirect: to.fullPath },
-      };
-    }
-  });
 
   return Router;
 });
