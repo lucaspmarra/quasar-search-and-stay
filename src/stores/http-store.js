@@ -32,10 +32,8 @@ export const useHttpStore = defineStore('http', {
       this.loading = true;
       try {
         const response = await api.get(`/admin/house_rules?page=${page}`);
-        console.log(response.data.data.entities);
         this.data = response.data.data.entities;
 
-        console.log(response.data.data.pagination);
         this.pagination = response.data.data.pagination;
         this.error = null;
       }
@@ -49,7 +47,7 @@ export const useHttpStore = defineStore('http', {
       }
     },
 
-    async addData(name, isChecked) {
+    async addData (name, isChecked) {
       this.loading = true;
       const payload = {
         house_rules: {
@@ -67,7 +65,41 @@ export const useHttpStore = defineStore('http', {
       finally {
         this.loading = false;
       }
+    },
+    async editData (id, name, isChecked) {
+      this.loading = true;
+      const payload = {
+        house_rules: {
+          name: name,
+          active: isChecked,
+        },
+      };
+      try {
+        await api.put(`/admin/house_rules/${id}`, payload);
+        this.error = null;
+      }
+      catch (error) {
+        this.error = error.message;
+      }
+      finally {
+        this.loading = false;
+      }
+    },
+
+    async deleteData (id) {
+      this.loading = true;
+      try {
+        await api.delete(`/admin/house_rules/${id}`);
+        this.error = null;
+      }
+      catch (error) {
+        this.error = error.message;
+      }
+      finally {
+        this.loading = false;
+      }
     }
+
   }
 }
 );

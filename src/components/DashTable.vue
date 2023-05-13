@@ -1,8 +1,8 @@
 <!-- eslint-disable no-unused-vars -->
 <script setup>
-import { onMounted, reactive, computed, ref } from 'vue';
+import { onMounted, reactive, computed, ref} from 'vue';
 import { useHttpStore } from '../stores/http-store';
-import NewRuleDialog from './NewRuleDialog.vue';
+// import NewRuleDialog from './NewRuleDialog.vue';
 
 const httpStore = useHttpStore();
 
@@ -21,39 +21,67 @@ const state = reactive({
   filter: '',
   name: '',
   active: 0,
-  showDialog: false,
+  showAddDialog: false,
+  showEditDialog: false,
 });
 
-const rows = computed(() => httpStore.getData);
+const isChecked = ref(0);
+
+const rows = computed(() => httpStore.getData.map(row => ({
+  ...row,
+  key: row.id
+})));
+
 const loading = computed(() => httpStore.isLoading);
+const error = computed(() => httpStore.getError);
 
 const columns = [
-  { name: 'id', align: 'left', label: 'ID', field: 'id', sortable: true },
+  { name: 'id', align: 'center', label: 'ID', field: 'id', sortable: true },
   { name: 'name', align: 'left', label: 'Name', field: 'name', sortable: true },
-  { name: 'active', align: 'left', label: 'Active', field: 'active', sortable: true },
-  { name: 'order', align: 'left', label: 'Order', field: 'order', sortable: true },
+  { name: 'active', align: 'center', label: 'Active', field: 'active', sortable: true },
+  { name: 'order', align: 'center', label: 'Order', field: 'order', sortable: true },
+  { name: 'edit', align: 'center', label: 'Edit', field: 'edit', sortable: false },
+  { name: 'delete', align: 'center', label: 'Delete', field: 'delete', sortable: false },
 ];
-
-function openDialog () {
+const addDialogVisible = computed(() => state.showAddDialog);
+function openAddDialog () {
   console.log('Dialog shown');
-  state.showDialog = true;
+  state.showAddDialog = true;
 }
 
 
-const dialogVisible = computed(() => state.showDialog);
+function editError() {
+  alert('Sorry, this is not working at the moment!');
+}
 
-const isChecked = ref(false);
+async function addData() {
+  try {
+    await httpStore.addData(state.name, isChecked.value);
+    await httpStore.fetchData();
+    state.name = '';
+    isChecked.value = 0;
+    state.showAddDialog = false;
+  }
+  catch (error) {
+    alert(error);
+  }
+}
 
+async function deleteRow (row) {
+  try {
+    await httpStore.deleteData(row.id);
+    await httpStore.fetchData();
+  }
+  catch (error) {
+    alert(error);
+  }
 
-function addData () {
-  httpStore.addData(state.name, isChecked.value);
-  state.showDialog = false;
 }
 </script>
 
 <template>
   <q-dialog
-    v-model="dialogVisible"
+    v-model="addDialogVisible"
     no-backdrop
     dismissible
     persistent>
@@ -66,7 +94,8 @@ function addData () {
           label="Name" />
         <q-checkbox
           v-model="isChecked"
-          label="Active?" />
+          label="Active?"
+          left-label />
       </q-card-section>
       <q-card-actions>
         <q-btn
@@ -75,16 +104,16 @@ function addData () {
         <q-btn
           flat
           label="Cancel"
-          @click="state.showDialog = false"
+          @click="state.showAddDialog = false"
           color="primary" />
       </q-card-actions>
     </q-card>
   </q-dialog>
 
-
-  <div class="q-pa-md">
+  <div class="q-pa-md table">
     <q-table
       title="Houses Rules"
+      :grid="$q.screen.xs"
       :rows="rows"
       :columns="columns"
       row-key="id"
@@ -119,6 +148,26 @@ function addData () {
             auto-width>
             {{ props.row.order }}
           </q-td>
+          <q-td
+            key="edit"
+            :props="props"
+            auto-width>
+            <q-btn
+              @click="editError"
+              icon="edit"
+              size="sm"
+              class="q-ml-sm" />
+          </q-td>
+          <q-td
+            key="delete"
+            :props="props"
+            auto-width>
+            <q-btn
+              icon="delete"
+              size="sm"
+              @click="deleteRow(props.row)"
+              class="q-ml-sm" />
+          </q-td>
         </q-tr>
       </template>
       <template #top>
@@ -126,7 +175,7 @@ function addData () {
           color="primary"
           :disable="loading"
           label="Add rule"
-          @click="openDialog" />
+          @click="openAddDialog" />
         <q-space />
       </template>
       <template #top-right>
@@ -148,8 +197,6 @@ function addData () {
         v-model="state.pagination.page"
         color="grey-8"
         :max="httpStore.getPagination ? httpStore.getPagination.total : 1"
-        @input="httpStore.fetchData(state.pagination.page)"
-        @next="httpStore.fetchNextPage"
         size="sm"
         input />
     </div>

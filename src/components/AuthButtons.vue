@@ -27,26 +27,21 @@ export default {
 <template>
   <div>
     <q-btn
+      class="q-ma-md"
+      label="Dashboard"
+      to="/" />
+
+    <q-btn
       v-if="authStore.isAuthenticated"
       class="q-ma-md"
       @click="logout"
       label="Logout" />
-
+      
     <q-btn
       v-else
       class="q-ma-md"
       @click="login"
       label="Login" />
-
-    <q-btn
-      class="q-ma-md"
-      label="Home"
-      to="/" />
-
-    <q-btn
-      class="q-ma-md"
-      label="Dashboard"
-      to="/dashboard" />
   </div>
 </template>
   

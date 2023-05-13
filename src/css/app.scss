@@ -24,9 +24,29 @@ body {
 }
 
 .card {
-    min-width: 700px
+    width: 700px;
+    justify-content: center;
+    align-items: center;
+
 }
 
 .add-card {
     width: 250px;
+}
+
+.table{
+    width: 700px;
+    margin: 0 auto;
+}
+
+@media only screen and (max-width: 40em) {
+    .card {
+        width: 300px;
+        justify-content: center;
+        align-items: center;
+
+        &__header{
+            font-size: 60px;
+        }
+    }
 }

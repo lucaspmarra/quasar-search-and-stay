@@ -19,24 +19,18 @@ export default defineComponent({
   <q-layout view="lHh Lpr lFf">
     <q-header elevated>
       <q-toolbar>
-        <q-btn
-          flat
-          dense
-          round
-          icon="menu"
-          aria-label="Menu" />
-
         <q-toolbar-title>
-          Quasar App
+          House Rules
         </q-toolbar-title>
         <AuthButtons />
-        <div>Quasar v{{ $q.version }}</div>
       </q-toolbar>
     </q-header>
 
     <q-page-container>
-      <router-view />
-      <LogoutDialog />
+      <q-page padding>
+        <router-view />
+        <LogoutDialog />
+      </q-page>
     </q-page-container>
   </q-layout>
 </template>
